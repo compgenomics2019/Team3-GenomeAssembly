@@ -78,6 +78,25 @@ get_input () {
 
 }
 
+quality_control(){
+        #input directory i
+        #output is created in the fastqc_output 
+        fastqc i/* -o fastqc_output
+	multiqc(){
+        #input fastqc_output folder
+        #output generated in multiqc_output folder
+        multiqc fastqc_output/*.zip -o multiqc_output
+}
+
+skesa_assembly(){
+        for i in $(ls):
+        do
+                R=${i%_*}
+                E=${i#*.}
+                skesa --fastq $R_1$E,$R_2$E --contigs_out $k_skesa.fa
+        done
+        }
+	
 main() {
 	# Function that defines the order in which functions will be called
 
