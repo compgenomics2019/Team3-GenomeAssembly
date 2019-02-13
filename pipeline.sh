@@ -3,7 +3,7 @@
 get_input () {
     # Function to parse arguments
     # Specifying usage message
-    usage="Usage: bash pipeline.bash -i <input directory> -o <output directory> -e <conda env name> -[OPTIONS]
+    usage="Usage: sh pipeline.bash -i <input directory> -o <output directory> -e <conda env name> -[OPTIONS]
               Bacterial short reads genome assembly software. The options available are:
                         -i : Directory for genome sequences [required]
                         -o : Output directory [required]
@@ -95,23 +95,34 @@ quality_control(){
         #input directory i
         #output is created in the fastqc_output 
         echo "quality control function here"
-	fastqc i/* -o fastqc_output
-        multiqc(){
+	mkdir temp/fastqc_output
+	fastqc $i/* -o temp/fastqc_output
         #input fastqc_output folder
         #output generated in multiqc_output folder
-        multiqc fastqc_output/*.zip -o multiqc_output
+	multiqc temp/fastqc_output/*.zip -o temp/multiqc_output
 }
 
 skesa_assembly(){
 	echo "Skesa: assembly function here"
-        for i in $(ls):
+        #echo "$(ls $i)"
+	mkdir -p temp/skesa
+	for k in $(ls $i)
         do
-                R=${i%_*}
-                E=${i#*.}
-                mkdir -p tmp/skesa
-                skesa --fastq $R_1$E,$R_2$E --contigs_out > tmp/skesa/$R_skesa.fa
-                mv tmp/skesa/* results/
-        done
+		R=${k%_*}
+                E=${k#*.}
+		f=$R_skesa.fa
+		if [ $(find temp/skesa/ -name '$f' | wc -l) -eq 0 ];then
+		#echo "$k"		
+		#echo "$E"
+                #mkdir -p temp/skesa
+		file1=$i"/"$R"_1."$E
+		file2=$i"/"$R"_2."$E
+		echo "$file1"
+		echo "$file2"
+                skesa --fastq $file1,$file2 --contigs_out temp/skesa/$f
+	fi        
+	done
+	mv temp/skesa results/
         }
 
 
@@ -120,11 +131,12 @@ skesa_assembly(){
 main() {
 	# Function that defines the order in which functions will be called
 
-	get_input "$@"
-  if [ "$v" == 1 ]
-  then
-          echo "Parsed input arguments..."
-  fi
+	##get_input "$@"
+	i="/projects/team3/genomeassembly/Mani/new-dir/running-skesa-gz/subset-testing"
+  
+  #then
+  #        echo "Parsed input arguments..."
+  #fi
 
   if [ "$v" == 1 ]
   then
@@ -136,18 +148,18 @@ main() {
   then
           echo "Temp directory created"
   fi
-  if [ "$multiqc" == 1 ]
-  then
-    if [ "$v" == 1 ]
-    then
-            echo "Quality analysis of reads intiated..."
-    fi
-    quality_control $i
+  #if [ "$multiqc" == 1 ]
+  #then
+    #if [ "$v" == 1 ]
+    #then
+    #        echo "Quality analysis of reads intiated..."
+    #fi
+    ####quality_control $i
     if [ "$v" == 1 ]
     then
             echo "Quality analysis of reads completed..."
     fi
-  fi
+  #fi
 
 	if [ "$assembler" == "spades" ]
   then
@@ -155,25 +167,25 @@ main() {
     then
             echo "SPAdes assemblies intiated..."
     fi
-    spades_assembly 
+    ##spades_assembly 
     if [ "$v" == 1 ]
     then
             echo "SPAdes assemblies completed..."
     fi
   fi
 
-  if [ "$assembler" == "skesa" ]
-  then
-    if [ "$v" == 1 ]
-    then
-            echo "SKESA assemblies intiated..."
-    fi
+  #if [ "$assembler" == "skesa" ]
+  #then
+    #if [ "$v" == 1 ]
+    #then
+    #        echo "SKESA assemblies intiated..."
+    #fi
     skesa_assembly $i
     if [ "$v" == 1 ]
     then
             echo "SKESA assemblies completed..."
     fi
-  fi
+  #fi
 
   if [ "$quast" == 1 ]
   then
@@ -181,7 +193,7 @@ main() {
     then
             echo "Quality analysis of assemblies initiated.."
     fi
-    quality_analysis
+    ##quality_analysis
     if [ "$v" == 1 ]
     then
             echo "Quality analysis of assemblies completed.."
