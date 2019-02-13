@@ -142,7 +142,7 @@ main() {
     then
             echo "Quality analysis of reads intiated..."
     fi
-    quality_control
+    quality_control $i
     if [ "$v" == 1 ]
     then
             echo "Quality analysis of reads completed..."
@@ -155,7 +155,7 @@ main() {
     then
             echo "SPAdes assemblies intiated..."
     fi
-    spades_assembly
+    spades_assembly 
     if [ "$v" == 1 ]
     then
             echo "SPAdes assemblies completed..."
@@ -168,7 +168,7 @@ main() {
     then
             echo "SKESA assemblies intiated..."
     fi
-    skesa_assembly
+    skesa_assembly $i
     if [ "$v" == 1 ]
     then
             echo "SKESA assemblies completed..."
