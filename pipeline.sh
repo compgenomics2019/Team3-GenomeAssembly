@@ -64,8 +64,8 @@ get_input () {
 		echo "Output directory already exists, would you like to overwrite? Reply with y/n"
 		read answer
 		case $answer in
-			y) echo "Overwriting file $output n subsequent steps";;
-			n) echo "File overwrite denied, exiting SNP pipeline"
+			y) echo "Overwriting folder $output n subsequent steps";;
+			n) echo "Folder overwrite denied, exiting SNP pipeline"
 				exit 1;;
 			\?) echo "Incorrect option specified, exiting SNP pipeline"
 				exit 1;;
@@ -104,21 +104,15 @@ quality_control(){
 
 skesa_assembly(){
 	echo "Skesa: assembly function here"
-        #echo "$(ls $i)"
 	mkdir -p temp/skesa
 	for k in $(ls $i)
         do
 		R=${k%_*}
                 E=${k#*.}
-		f=$R_skesa.fa
+		f="$R""_skesa.fa"
 		if [ $(find temp/skesa/ -name '$f' | wc -l) -eq 0 ];then
-		#echo "$k"		
-		#echo "$E"
-                #mkdir -p temp/skesa
 		file1=$i"/"$R"_1."$E
 		file2=$i"/"$R"_2."$E
-		echo "$file1"
-		echo "$file2"
                 skesa --fastq $file1,$file2 --contigs_out temp/skesa/$f
 	fi        
 	done
