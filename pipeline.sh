@@ -64,7 +64,7 @@ get_input () {
 		echo "Output directory already exists, would you like to overwrite? Reply with y/n"
 		read answer
 		case $answer in
-			y) echo "Overwriting folder $output n subsequent steps";;
+			y) echo "Overwriting folder $output in subsequent steps";;
 			n) echo "Folder overwrite denied, exiting SNP pipeline"
 				exit 1;;
 			\?) echo "Incorrect option specified, exiting SNP pipeline"
@@ -77,16 +77,47 @@ get_input () {
 }
 
       prepare_temp(){
-      echo "Prepare temp function here"
+      if  [ "$v" == 1 ]
+      then
+	    echo "Preparing temp directory"
+      fi
+      mkdir -p temp
+      mkdir -p temp/skesa
+      #mkdir -p temp/quast
+      #mkdir -p temp/spades
       }
 
      
       spades_assembly(){
-      echo "Spades assembly function here"
-      }
+      echo "Spades assembly"
+      echo $i
+      mkdir -p temp/spades
+        for k in $(ls $i)
+        do
+		#echo $k
+		R=${k%_*}
+		#echo $R
+                E=${k#*.}
+                f="$R""_spades.fa"
+                if [ $(find temp/spades/ -name '$f' | wc -l) -eq 0 ];then
+                file1=$i"/"$R"_1."$E
+                file2=$i"/"$R"_2."$E
+		echo "$file1"
+		echo $file1
+		echo "$file2"
+		echo $file2
+		#/projects/home/sac8/miniconda2/envs/g_3/bin/spades.py 
+                spades.py -1 $file1 -2 $file2 ----careful --cov-cutoff auto -o temp/spades
+                #skesa --fastq $file1,$file2 --contigs_out temp/skesa/$f
+		
+        fi
+        done
+        mv temp/spades/  results/
+        }
 
       quality_analysis(){
-      echo "Quality analysis function here"
+      echo “Quast: Quality Assessment Tool for Genome Assemblies”
+      mkdir -p temp/quast
       }
 
 
@@ -125,61 +156,65 @@ skesa_assembly(){
 main() {
 	# Function that defines the order in which functions will be called
 
-	##get_input "$@"
-	i="/projects/team3/genomeassembly/Mani/new-dir/running-skesa-gz/subset-testing"
+	get_input "$@"
+	#i = "/projects/team3/genomeassembly/Mani/new-dir/running-skesa-gz/subset-testing"
   
-  #then
-  #        echo "Parsed input arguments..."
-  #fi
+  if  [ "$v" == 1 ]
+  then
+          echo "Parsed input arguments..."
+  fi
 
   if [ "$v" == 1 ]
   then
           echo "Preparing temp_directory..."
   fi
 
-	prepare_temp
+  prepare_temp
+  
   if [ "$v" == 1 ]
   then
           echo "Temp directory created"
   fi
-  #if [ "$multiqc" == 1 ]
-  #then
-    #if [ "$v" == 1 ]
-    #then
-    #        echo "Quality analysis of reads intiated..."
-    #fi
-    ####quality_control $i
+
+  if [ "$multiqc" == 1 ]
+  then
+    if [ "$v" == 1 ]
+    then
+            echo "Quality analysis of reads intiated..."
+    fi
+    quality_control $i
     if [ "$v" == 1 ]
     then
             echo "Quality analysis of reads completed..."
     fi
-  #fi
+  fi
 
-	if [ "$assembler" == "spades" ]
+
+  if [ "$assembler" == "spades" ]
   then
     if [ "$v" == 1 ]
     then
             echo "SPAdes assemblies intiated..."
     fi
-    ##spades_assembly 
+    spades_assembly $i
     if [ "$v" == 1 ]
     then
             echo "SPAdes assemblies completed..."
     fi
   fi
 
-  #if [ "$assembler" == "skesa" ]
-  #then
-    #if [ "$v" == 1 ]
-    #then
-    #        echo "SKESA assemblies intiated..."
-    #fi
+  if [ "$assembler" == "skesa" ]
+  then
+    if [ "$v" == 1 ]
+    then
+            echo "SKESA assemblies intiated..."
+    fi
     skesa_assembly $i
     if [ "$v" == 1 ]
     then
             echo "SKESA assemblies completed..."
     fi
-  #fi
+  fi
 
   if [ "$quast" == 1 ]
   then
