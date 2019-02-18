@@ -104,51 +104,60 @@ perform_trimming()
 		file5=$R"_UP."$E
 		trimmomatic PE $i/$file1 $i/$file2 temp/trim/$file1 temp/trim/$file3 temp/trim/$file2 temp/trim/$file4 SLIDINGWINDOW:12:18 MINLEN:100 AVGQUAL:18
 		cat temp/trim/$file3 temp/trim/$file4 > temp/trim/$file5
-	rm temp/trim/$file3
-	rm temp/trim/$file4
+	#rm temp/trim/$file3
+	#rm temp/trim/$file4
 fi
 done
 }		
 	     
       spades_assembly(){
-      echo "Spades assembly"
+      if  [ "$v" == 1 ]
+      then
+            echo "Spades assembly"
+      fi
+
       mkdir -p temp/spades
-	if [ trimming==1 ];
+	if [ "$trimming" == 1 ]
 	then
 		dir="temp/trim"
-	#else 
-	#	dir=$i
-	#fi
 
         for k in $(ls $dir)
         do
 		R=${k%_*}
                 E=${k#*.}
-                f="$R""_spades.fa"
-                if [ $(find temp/spades/ -name '$f' | wc -l) -eq 0 ];then
+                f="scaffolds.fasta"
+		file1=$dir"/"$R"_1."$E
+                file2=$dir"/"$R"_2."$E
+                file3=$dir"/"$R"_UP."$E
+		mkdir -p temp/spades/$R
+		#cp $file1 $R/
+		#cp $file2 $R/
+		#cp $file3 $R/
+                if [ $(find temp/spades/$R -name '$f' | wc -l) -eq 0 ];then
                 file1=$dir"/"$R"_1."$E
                 file2=$dir"/"$R"_2."$E
-		file3=$dir"/"$R"_UP."$E	
-		#echo "$file1"
-		#echo $file1
-		#echo "$file2"
-		#echo $file2
-		#/projects/home/sac8/miniconda2/envs/g_3/bin/spades.py 
-                spades.py -1 $file1 -2 $file2 -s $file3 ----careful --cov-cutoff auto -o temp/spades
-                #skesa --fastq $file1,$file2 --contigs_out temp/skesa/$f
+		file3=$dir"/"$R"_UP."$E	 
+                spades.py -1 $file1 -2 $file2 -s $file3 --careful --cov-cutoff auto -o temp/spades/$R/
+                
 		
         fi
         done
 	else
-                $i
-		######add spades function old one####
-	        
-
-fi
-
-
-        mv temp/spades/  results/
-        }
+       	for k in $(ls $i)
+       	do
+        	R=${k%_*}
+       		E=${k#*.}
+       		f="scaffolds.fasta"
+		mkdir -p temp/spades/$R
+               	if [ $(find temp/spades/$R -name '$f' | wc -l) -eq 0 ];then
+               	file1=$i"/"$R"_1."$E
+               	file2=$i"/"$R"_2."$E
+               	spades.py -1 $file1 -2 $file2 --careful --cov-cutoff auto -o temp/spades/$R/
+       fi
+       done
+       fi
+       mv temp/spades  results/
+       }
 
       quality_analysis(){
       echo “Quast: Quality Assessment Tool for Genome Assemblies”
@@ -167,25 +176,31 @@ quality_control(){
         #input directory i
         #output is created in the fastqc_output 
         echo "quality control function here"
-	mkdir temp/fastqc_output
+	mkdir -p temp/fastqc_output
+	if [ "$trimming" == 1 ];then
+	
+		fastqc temp/trim/* -o temp/fastqc_output
+        	
+		#For multiqc input fastqc_output folder
+        	#output generated in multiqc_output folder
+		multiqc temp/fastqc_output/*.zip -o temp/multiqc_output
+else
 	fastqc $i/* -o temp/fastqc_output
-        #input fastqc_output folder
-        #output generated in multiqc_output folder
 	multiqc temp/fastqc_output/*.zip -o temp/multiqc_output
+fi
 }
+
 
 skesa_assembly(){
 	echo "Skesa: assembly function here"
 	mkdir -p temp/skesa
-	if [ trimming==1 ];
-        then
-                dir="temp/trim"
-        else
+	#if [ "$trimming" == 1 ]
+        #then
+        #        dir="temp/trim"
+	#	echo "hi"
+        #else
                 dir=$i
-        fi
-
-        #for k in $(ls $dir)
-        #do
+        #fi
 
 	for k in $(ls $dir)
         do
@@ -193,8 +208,8 @@ skesa_assembly(){
                 E=${k#*.}
 		f="$R""_skesa.fa"
 		if [ $(find temp/skesa/ -name '$f' | wc -l) -eq 0 ];then
-		file1=$i"/"$R"_1."$E
-		file2=$i"/"$R"_2."$E
+		file1=$dir"/"$R"_1."$E
+		file2=$dir"/"$R"_2."$E
                 skesa --fastq $file1,$file2 --contigs_out temp/skesa/$f
 	fi        
 	done
@@ -207,13 +222,13 @@ skesa_assembly(){
 main() {
 	# Function that defines the order in which functions will be called
 
-	get_input "$@"
-	#i = "/projects/team3/genomeassembly/Mani/new-dir/running-skesa-gz/subset-testing"
-
+	#get_input "$@"
+i="/projects/team3/genomeassembly/Mani/new-dir/running-skesa-gz/subset-testing"
+trimming=1
 if [ "$trimming" == 1 ]
 then
  	echo "performing trimming..."
-	perform_trim $i
+	#perform_trimming $i #uncoment after testing #trimming function working fine
 fi  
   
 if  [ "$v" == 1 ]
@@ -246,7 +261,6 @@ if  [ "$v" == 1 ]
     fi
   fi
 
-
   if [ "$assembler" == "spades" ]
   then
     if [ "$v" == 1 ]
@@ -259,19 +273,21 @@ if  [ "$v" == 1 ]
             echo "SPAdes assemblies completed..."
     fi
   fi
-
+spades_assembly $i
   if [ "$assembler" == "skesa" ]
   then
     if [ "$v" == 1 ]
     then
             echo "SKESA assemblies intiated..."
     fi
-    skesa_assembly 
+    skesa_assembly $i
     if [ "$v" == 1 ]
     then
             echo "SKESA assemblies completed..."
     fi
   fi
+#i="/projects/team3/genomeassembly/Mani/new-dir/running-skesa-gz/subset-testing"
+    #skesa_assembly $i #skesa function working fine 
 
   if [ "$quast" == 1 ]
   then
@@ -279,7 +295,7 @@ if  [ "$v" == 1 ]
     then
             echo "Quality analysis of assemblies initiated.."
     fi
-    ##quality_analysis
+    quality_analysis
     if [ "$v" == 1 ]
     then
             echo "Quality analysis of assemblies completed.."
