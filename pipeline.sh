@@ -40,7 +40,7 @@ get_input () {
         done
 
   #Check for presence of required arguments
-  if [ ! "$input_directory" ] || [ ! "$output_directory" ] || [ ! "$env_name" ]
+  if [ ! "$input_directory" ] || [ ! "$output_directory" ]
   then
     echo "ERROR: Required arguments missing!"
     echo "$usage"
@@ -85,7 +85,7 @@ perform_trimming()
 {
 	echo "Trimming with trimmomatic"
 	mkdir -p temp/trim
-	for k in $(ls $iinput_directory)
+	for k in $(ls $input_directory)
         do
 		R=${k%_*}
                 E=${k#*.}
@@ -96,7 +96,7 @@ perform_trimming()
 		file3=$R"_1UP."$E
 		file4=$R"_2UP."$E
 		file5=$R"_UP."$E
-		trimmomatic PE $input_directory/$file1 $i/$file2 temp/trim/$file1 temp/trim/$file3 temp/trim/$file2 temp/trim/$file4 SLIDINGWINDOW:12:18 MINLEN:100 AVGQUAL:18
+		trimmomatic PE $input_directory/$file1 $input_directory/$file2 temp/trim/$file1 temp/trim/$file3 temp/trim/$file2 temp/trim/$file4 SLIDINGWINDOW:12:18 MINLEN:100 AVGQUAL:18
 		cat temp/trim/$file3 temp/trim/$file4 > temp/trim/$file5
 	#rm temp/trim/$file3
 	#rm temp/trim/$file4
@@ -210,6 +210,26 @@ skesa_assembly(){
 	mv temp/skesa results/
         }
 
+quality_analysis(){
+echo “Quast: Quality Assessment Tool for Genome Assemblies”
+mkdir -p temp/quast
+if [ "$assembler" == "spades" ]
+then
+mkdir -p results/quast/
+for k in $(ls /projects/team3/genomeassembly/results/spades_18/)
+do
+        cp results/spades/$k/scaffolds.fasta temp/quast/
+        mv temp/quast/scaffolds.fasta temp/quast/$k"_scaffolds.fasta"
+done
+quast.py temp/quast/* -o results/quast/
+fi
+
+if [ "$assembler" == "skesa" ]
+then
+mkdir -p results/quast/
+quast.py results/skesa/* -o results/quast/
+fi
+}
 
 
 
