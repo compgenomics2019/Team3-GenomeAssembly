@@ -1,4 +1,4 @@
-name: fuck2
+name: fuck6
 channels:
   - bioconda
   - defaults
@@ -7,6 +7,7 @@ dependencies:
   - blas=1.0=mkl
   - blast=2.5.0=hc0b0e79_3
   - boost=1.67.0=py36_4
+  - bowtie=1.2.2=py36h2d50403_1
   - bwa=0.7.17=h84994c4_5
   - bzip2=1.0.6=h14c3975_5
   - ca-certificates=2019.1.23=0
@@ -106,8 +107,10 @@ dependencies:
   - skesa=2.3.0=h4ef8376_0
   - spades=3.13.0=0
   - sqlite=3.26.0=h7b6447c_0
+  - tbb=2019.1=hfd86e86_0
   - tk=8.6.8=hbc83047_0
   - tornado=5.1.1=py36h7b6447c_0
+  - trimmomatic=0.38=1
   - wheel=0.32.3=py36_0
   - xz=5.2.4=h14c3975_4
   - zlib=1.2.11=h7b6447c_3
@@ -130,5 +133,5 @@ dependencies:
     - requests==2.21.0
     - spectra==0.0.11
     - urllib3==1.24.1
-prefix: /projects/home/whutwagner3/miniconda2/envs/fuck2
+prefix: /projects/home/whutwagner3/miniconda2/envs/fuck6
 
