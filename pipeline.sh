@@ -137,7 +137,7 @@ done
                 file1=$dir"/"$R"_1."$E
                 file2=$dir"/"$R"_2."$E
 		file3=$dir"/"$R"_UP."$E	 
-                spades.py -1 $file1 -2 $file2 -s $file3 --careful --cov-cutoff auto -o temp/spades/$R/
+                spades.py -1 $file1 -2 $file2 -s $file3 -k 99,105,107,115 --careful --cov-cutoff auto -o temp/spades/$R/
                 
 		
         fi
