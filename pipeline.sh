@@ -1,39 +1,35 @@
 #!/bin/bash
 
 get_input () {
+
     # Function to parse arguments
     # Specifying usage message
-    usage="Usage: sh pipeline.bash -i <input directory> -o <output directory> -e <conda env name> -[OPTIONS]
+    usage="Usage: sh pipeline.bash -i <input directory> -o <output directory> -[OPTIONS]
               Bacterial short reads genome assembly software. The options available are:
                         -i : Directory for genome sequences [required]
                         -o : Output directory [required]
-                        -e : Conda environment name [required]
-                        -a : Assembler name (spades/skesa, default is both:spades,skesa)
+                        -a : Option for selecting Assembler (spades/skesa, default is both:spades,skesa)
                         -q : Flag to perform quality analysis of assembly using Quast
                         -m : Flag to perform quality analysis of reads using FastQC+MultiQC
                         -k : Kmer size (default=103)
                         -v : Flag to turn on verbose mode
                         -h : Print usage instructions"
   #Specifying deafult Arguments
-  a="skesa,spades"
+  assembler="skesa,spades"
   quast=0
   multiqc=0
   temp_directory="temp"
   kmer_length=103
   v=0
-  z=0
     #Getopts block, will take in the arguments as inputs and assign them to variables
         while getopts "i:o:a:e:zqmk:vh" option; do
                 case $option in
                         i) input_directory=$OPTARG;;
                         o) output_directory=$OPTARG;;
-                        e) env_name=$OPTARG;;
                         a) assembler=$OPTARG;;
-                        z) z=1;;
                         q) quast=1;;
                         m) multiqc=1;;
-                        k) kmer_length=1;;
-			t) trimming==1;;
+                        k) kmer_length=$OPTARG;;
                         v) v=1;;
                               h) echo "$usage"
                                     exit 0;;
@@ -50,8 +46,6 @@ get_input () {
     echo "$usage"
     exit 1
   fi
-
-  #Check if i is a directory
 
   if [ ! -d $input_directory ]
   then echo "ERROR: Not a valid directory"
@@ -84,14 +78,14 @@ get_input () {
 	    echo "Preparing temp directory"
       fi
       mkdir -p temp
-      mkdir -p results
+      mkdir -p $output_directory
       }
 
 perform_trimming()
-{ 
+{
 	echo "Trimming with trimmomatic"
 	mkdir -p temp/trim
-	for k in $(ls $i)
+	for k in $(ls $iinput_directory)
         do
 		R=${k%_*}
                 E=${k#*.}
@@ -102,7 +96,7 @@ perform_trimming()
 		file3=$R"_1UP."$E
 		file4=$R"_2UP."$E
 		file5=$R"_UP."$E
-		trimmomatic PE $i/$file1 $i/$file2 temp/trim/$file1 temp/trim/$file3 temp/trim/$file2 temp/trim/$file4 SLIDINGWINDOW:12:18 MINLEN:100 AVGQUAL:18
+		trimmomatic PE $input_directory/$file1 $i/$file2 temp/trim/$file1 temp/trim/$file3 temp/trim/$file2 temp/trim/$file4 SLIDINGWINDOW:12:18 MINLEN:100 AVGQUAL:18
 		cat temp/trim/$file3 temp/trim/$file4 > temp/trim/$file5
 	#rm temp/trim/$file3
 	#rm temp/trim/$file4
@@ -143,15 +137,15 @@ done
         fi
         done
 	else
-       	for k in $(ls $i)
+       	for k in $(ls $input_directory)
        	do
         	R=${k%_*}
        		E=${k#*.}
        		f="scaffolds.fasta"
 		mkdir -p temp/spades/$R
                	if [ $(find temp/spades/$R -name '$f' | wc -l) -eq 0 ];then
-               	file1=$i"/"$R"_1."$E
-               	file2=$i"/"$R"_2."$E
+               	file1=$input_directory"/"$R"_1."$E
+               	file2=$input_directory"/"$R"_2."$E
                	spades.py -1 $file1 -2 $file2 --careful --cov-cutoff auto -o temp/spades/$R/
        fi
        done
@@ -185,7 +179,7 @@ quality_control(){
         	#output generated in multiqc_output folder
 		multiqc temp/fastqc_output/*.zip -o temp/multiqc_output
 else
-	fastqc $i/* -o temp/fastqc_output
+	fastqc $input_directory/* -o temp/fastqc_output
 	multiqc temp/fastqc_output/*.zip -o temp/multiqc_output
 fi
 }
@@ -199,7 +193,7 @@ skesa_assembly(){
         #        dir="temp/trim"
 	#	echo "hi"
         #else
-                dir=$i
+                dir=$input_directory
         #fi
 
 	for k in $(ls $dir)
@@ -222,8 +216,9 @@ skesa_assembly(){
 main() {
 	# Function that defines the order in which functions will be called
 
-	#get_input "$@"
-i="/projects/team3/genomeassembly/Mani/new-dir/running-skesa-gz/subset-testing"
+get_input "$@"
+
+#i="/projects/team3/genomeassembly/Mani/new-dir/running-skesa-gz/subset-testing"
 trimming=1
 if [ "$trimming" == 1 ]
 then
@@ -254,7 +249,7 @@ if  [ "$v" == 1 ]
     then
             echo "Quality analysis of reads intiated..."
     fi
-    quality_control $i
+    quality_control $input_directory
     if [ "$v" == 1 ]
     then
             echo "Quality analysis of reads completed..."
@@ -273,14 +268,14 @@ if  [ "$v" == 1 ]
             echo "SPAdes assemblies completed..."
     fi
   fi
-spades_assembly $i
+spades_assembly $input_directory
   if [ "$assembler" == "skesa" ]
   then
     if [ "$v" == 1 ]
     then
             echo "SKESA assemblies intiated..."
     fi
-    skesa_assembly $i
+    skesa_assembly $input_directory
     if [ "$v" == 1 ]
     then
             echo "SKESA assemblies completed..."
