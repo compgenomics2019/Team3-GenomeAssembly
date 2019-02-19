@@ -32,8 +32,7 @@ git clone git@github.gatech.edu:compgenomics2019/Team3-GenomeAssembly.git
 ```
 
 Next create and activate a conda environment  from the yml file provides in the 
-lib directory. Multiqc clashes with the yml file and you will need to pip instal
-l after activating your environment.
+lib directory.
 
 ```
 ### FOR LINUX ###
@@ -83,16 +82,12 @@ and you will have the following printed:
 
 ```
 Usage: sh pipeline.bash -i <input directory> -o <output directory> -[OPTIONS]
-              Bacterial short reads genome assembly software. The options availa
-ble are:
+              Bacterial short reads genome assembly software. The options available are:
                         -i : Directory for genome sequences [required]
                         -o : Output directory [required]
-                        -a : Option for selecting Assembler (spades/skesa, defau
-lt is both:spades,skesa)
-                        -q : Flag to perform quality analysis of assembly using 
-Quast
-                        -m : Flag to perform quality analysis of reads using Fas
-tQC+MultiQC
+                        -a : Option for selecting Assembler (spades/skesa, default is both:spades,skesa)
+                        -q : Flag to perform quality analysis of assembly using Quast
+                        -m : Flag to perform quality analysis of reads using FastQC+MultiQC
                         -k : Kmer size (default=103)
                         -v : Flag to turn on verbose mode
                         -h : Print usage instructions
