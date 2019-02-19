@@ -65,10 +65,10 @@ Team3-GenomeAssembly/
 
 ### For Help...
 
-Having trouble at any time running our pipeline? Feel free to try the following command inside Team3-GenomeAssembly/
+Having trouble at any time running our pipeline? Feel free to try the following command within Team3-GenomeAssembly/
 
 ```
-./pipeline -h
+./pipeline.sh -h
 ```
 
 and you will have the following printed:
@@ -88,9 +88,9 @@ Usage: sh pipeline.bash -i <input directory> -o <output directory> -[OPTIONS]
 
 ### Running example_data
 
-For an example, we can assembly our example_data/ using SPAdes with kmer size 99 and 103 and produce a quast report using the following command:
+For an example, we can assembly our example_data/ using SPAdes with kmer size 99 and 103 and produce a quast report using the following command within the Team3-GenomeAssembly/ directory:
 
 ```
-
+./pipeline.sh -i example_data/ -o example_out -q -k 99, 103
 ```
 
