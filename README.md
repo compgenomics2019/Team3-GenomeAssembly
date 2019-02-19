@@ -1,4 +1,4 @@
-# Team3-GenomeAssembly: Bacteria genome ASSembily (BASS)
+# Team3-GenomeAssembly: Bacteria genome ASSembily (BASS) ><((('>
 
 This pipeline is meant to assemble paired-end bacterial genomes that have short 
 reads. The pipeline uses both SPADES and SKESA to assemble your genomes. We take
@@ -36,8 +36,14 @@ lib directory. Multiqc clashes with the yml file and you will need to pip instal
 l after activating your environment.
 
 ```
+### FOR LINUX ###
 cd Team3-GenomeAssembly/
-conda env create -f lib/lassie.yml -n your_env_name
+conda env create -f lib/bass_linux.yml -n your_env_name
+source activate your_env_name
+
+### FOR MAC ###
+cd Team3-GenomeAssembly/
+conda env create -f lib/bass_OS.yml -n your_env_name
 source activate your_env_name
 ```
 
@@ -56,8 +62,7 @@ for your own dependencies including the following:
 
 ### Prepping your data
 
-Your forward and reverse reads for your genomes should be in an input folder alo
-ne. See example_data/ as a reference below:
+Your forward and reverse reads for your genomes should be in an input folder alone. See example_data/ as a reference below:
 
 ```
 Team3-GenomeAssembly/
@@ -68,11 +73,10 @@ Team3-GenomeAssembly/
 
 ### For Help...
 
-Having trouble at any time running our pipeline? Feel free to try inside Team3-G
-enomeAssembly/:
+Having trouble at any time running our pipeline? Feel free to try the following command inside Team3-GenomeAssembly/
 
 ```
-./pipeline -f
+./pipeline -h
 ```
 
 and you will have the following printed:
@@ -93,3 +97,6 @@ tQC+MultiQC
                         -v : Flag to turn on verbose mode
                         -h : Print usage instructions
 ```
+
+### Running example_data
+
