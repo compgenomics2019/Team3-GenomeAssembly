@@ -1,4 +1,4 @@
-# Team3-GenomeAssembly: Bacteria genome ASSembily (BASS) ><((('>
+# Bacterial genome ASSembly (BASS) ><((('>
 
 This pipeline is meant to assemble paired-end bacterial genomes that have short reads. The pipeline uses both SPADES (slow) and SKESA (fast) to assemble your genomes. We take in a directory of genome sequences, and output directory, whether you want quality anaysis or not, and preferred kmer sizes. [Check out our wiki page](https://compgenomics2019.biosci.gatech.edu/Team_III_Genome_Assembly_Group)
 
