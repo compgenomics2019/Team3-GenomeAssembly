@@ -1,14 +1,10 @@
 # Team3-GenomeAssembly: Bacteria genome ASSembily (BASS) ><((('>
 
-This pipeline is meant to assemble paired-end bacterial genomes that have short 
-reads. The pipeline uses both SPADES (slow) and SKESA (fast) to assemble your genomes. We take
- in a directory of genome sequences, trimming parameters, whether you want FastQ
-C and MultiQC reports, and preferred kmer size.
+This pipeline is meant to assemble paired-end bacterial genomes that have short reads. The pipeline uses both SPADES (slow) and SKESA (fast) to assemble your genomes. We take in a directory of genome sequences, and output directory, whether you want quality anaysis or not, and preferred kmer sizes. 
 
 ## Installing
 
-This pipeline uses as conda based environment to ensure you have the appropriate
- dependencies. We recommend that you download and install Miniconda from https://conda.io/en/latest/miniconda.html 
+This pipeline uses as conda based environment to ensure you have the appropriate dependencies. We recommend that you download and install Miniconda from https://conda.io/en/latest/miniconda.html 
 
 Example for installing Miniconda for Linux :
 
@@ -30,8 +26,7 @@ If you need the ssh version:
 git clone git@github.gatech.edu:compgenomics2019/Team3-GenomeAssembly.git
 ```
 
-Next create and activate a conda environment from the yml file provides in the 
-lib directory.
+Next create and activate a conda environment from the yml files provided in the lib directory.
 
 ```
 ### FOR LINUX ###
@@ -45,8 +40,7 @@ conda env create -f lib/bass_OS.yml -n your_env_name
 source activate your_env_name
 ```
 
-If you decline to create an environment with Miniconda, you will be responsible 
-for your own dependencies for the following:
+If you decline to create an environment with Miniconda, you will be responsible for your own dependencies for the following:
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 - [MultiQC](https://multiqc.info/)
 - [SPAdes](http://cab.spbu.ru/software/spades/)
@@ -84,13 +78,19 @@ Usage: sh pipeline.bash -i <input directory> -o <output directory> -[OPTIONS]
               Bacterial short reads genome assembly software. The options available are:
                         -i : Directory for genome sequences [required]
                         -o : Output directory [required]
-                        -a : Option for selecting Assembler (spades/skesa, default is both:spades,skesa)
+                        -f : For fast assembly (uses skesa)
                         -q : Flag to perform quality analysis of assembly using Quast
                         -m : Flag to perform quality analysis of reads using FastQC+MultiQC
-                        -k : Kmer size (default=103)
+                        -k : Kmer range for spades (default=99,105,107,115)
                         -v : Flag to turn on verbose mode
                         -h : Print usage instructions
 ```
 
 ### Running example_data
+
+For an example, we can assembly our example_data/ using SPAdes with kmer size 99 and 103 and produce a quast report using the following command:
+
+```
+
+```
 
