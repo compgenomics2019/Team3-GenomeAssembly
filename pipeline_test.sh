@@ -88,7 +88,7 @@ prepare_temp(){
   fi
 
   mkdir -p temp
-  mkdir -p results
+  #mkdir -p results
 }
 
 perform_trimming()
@@ -179,7 +179,7 @@ quality_control(){
     multiqc temp/fastqc_output/*.zip -o temp/multiqc_output
   fi
 
-  mv temp/multiqc_output $output_directory/
+  mv temp/multiqc_output $output_directory
 }
 
 skesa_assembly(){
@@ -261,7 +261,7 @@ main() {
             echo "SPAdes assemblies completed..."
     fi
   fi
-spades_assembly $input_directory
+spades_assembly $input_directory #remove after testing
   if [ "$assembler" == "skesa" ]
   then
     if [ "$v" == 1 ]
@@ -274,8 +274,6 @@ spades_assembly $input_directory
             echo "SKESA assemblies completed..."
     fi
   fi
-#i="/projects/team3/genomeassembly/Mani/new-dir/running-skesa-gz/subset-testing"
-    #skesa_assembly $input_directory #skesa function working fine
 
   if [ "$quast" == 1 ]
   then
