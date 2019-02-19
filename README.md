@@ -47,10 +47,8 @@ for your own dependencies including the following:
 - [MultiQC](https://multiqc.info/)
 - [SPAdes](http://cab.spbu.ru/software/spades/)
 - [ABYSS](http://www.bcgsc.ca/platform/bioinfo/software/abyss)
-- [SKESA](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-018-15
-40-z)
-- [Bowtie(dependency of lib/SSpace_basic)](http://bowtie-bio.sourceforge.net/ind
-ex.shtml)
+- [SKESA](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-018-1540-z)
+- [Bowtie(dependency of lib/SSpace_basic)](http://bowtie-bio.sourceforge.net/index.shtml)
 - [QUAST](http://quast.sourceforge.net/quast)
 
 
