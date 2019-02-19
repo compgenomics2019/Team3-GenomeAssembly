@@ -1,15 +1,14 @@
 # Team3-GenomeAssembly: Bacteria genome ASSembily (BASS) ><((('>
 
 This pipeline is meant to assemble paired-end bacterial genomes that have short 
-reads. The pipeline uses both SPADES and SKESA to assemble your genomes. We take
+reads. The pipeline uses both SPADES (slow) and SKESA (fast) to assemble your genomes. We take
  in a directory of genome sequences, trimming parameters, whether you want FastQ
 C and MultiQC reports, and preferred kmer size.
 
 ## Installing
 
 This pipeline uses as conda based environment to ensure you have the appropriate
- dependencies. We recommend that you download and in stall Miniconda from https:
-//conda.io/en/latest/miniconda.html 
+ dependencies. We recommend that you download and install Miniconda from https://conda.io/en/latest/miniconda.html 
 
 Example for installing Miniconda for Linux :
 
@@ -31,7 +30,7 @@ If you need the ssh version:
 git clone git@github.gatech.edu:compgenomics2019/Team3-GenomeAssembly.git
 ```
 
-Next create and activate a conda environment  from the yml file provides in the 
+Next create and activate a conda environment from the yml file provides in the 
 lib directory.
 
 ```
@@ -47,7 +46,7 @@ source activate your_env_name
 ```
 
 If you decline to create an environment with Miniconda, you will be responsible 
-for your own dependencies including the following:
+for your own dependencies for the following:
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 - [MultiQC](https://multiqc.info/)
 - [SPAdes](http://cab.spbu.ru/software/spades/)
@@ -66,8 +65,8 @@ Your forward and reverse reads for your genomes should be in an input folder alo
 ```
 Team3-GenomeAssembly/
    example_data/
-      CGT3826_1.fq.gz
-      CGT3826_2.fq.gz
+      CGT3662_1.fq.gz
+      CGT3662_2.fq.gz
 ```
 
 ### For Help...
