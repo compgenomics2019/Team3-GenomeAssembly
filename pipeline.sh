@@ -22,7 +22,7 @@ get_input () {
   quast=0
   multiqc=0
   temp_directory="temp"
-  #kmer_length="99,105,107,115"
+  kmer_length="99,105,107,115"
   v=0
 
   #Getopts block, will take in the arguments as inputs and assign them to variables
@@ -33,7 +33,7 @@ get_input () {
                   f) f=1;;
                   q) quast=1;;
                   m) multiqc=1;;
-                  k) kmer_length=1;;
+                  k) kmer_length=$OPTARG;;
                   v) v=1;;
                   h) echo "$usage"
                         exit 0;;
@@ -77,6 +77,9 @@ get_input () {
     assembler="skesa"
     trimming=0
   fi
+  
+  #Export kmer var to be used within xargs
+  export kmer_length
 
 
 }
@@ -126,7 +129,7 @@ spades_assembly(){
 
   mkdir -p temp/spades
 
-  cat temp/genomes_list.txt | xargs -L2 bash -c 'spades.py -1 temp/trim/"$0"_1."$1" -2 temp/trim/"$0"_2."$1" -s temp/trim/"$0"_UP."$1" --careful --cov-cutoff auto -o temp/spades/"$0"'
+  cat temp/genomes_list.txt | xargs -L2 bash -c 'spades.py -k $kmer_length -1 temp/trim/"$0"_1."$1" -2 temp/trim/"$0"_2."$1" -s temp/trim/"$0"_UP."$1" --careful --cov-cutoff auto -o temp/spades/"$0"'
 
   mv temp/spades  $output_directory/
 }
@@ -228,7 +231,7 @@ main() {
     then
             echo "SPAdes assemblies intiated..."
     fi
-    spades_assembly $input_directory
+    spades_assembly $input_directory $kmer_length
     if [ "$v" == 1 ]
     then
             echo "SPAdes assemblies completed..."
@@ -268,7 +271,7 @@ main() {
           echo "Assembly pipeline complete!"
   fi
 
-  #rm -r temp
+  rm -r temp
 }
 
 # Calling the main function
