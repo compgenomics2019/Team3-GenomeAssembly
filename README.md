@@ -81,16 +81,42 @@ Usage: sh pipeline.bash -i <input directory> -o <output directory> -[OPTIONS]
                         -f : For fast assembly (uses skesa)
                         -q : Flag to perform quality analysis of assembly using Quast
                         -m : Flag to perform quality analysis of reads using FastQC+MultiQC
-                        -k : Kmer range for spades (default=99,105,107,115)
+                        -k : Kmer range for spades (default=99,105,107,111)
                         -v : Flag to turn on verbose mode
                         -h : Print usage instructions
 ```
 
 ### Running example_data
 
-For an example, we can assembly our example_data/ using SPAdes with specified kmer sizes 99,105,107, and 115 (same as default), run FastQC and MultiQC, and produce a quast report using the following command within the Team3-GenomeAssembly/ directory:
+For an example, we can assembly our example_data/ using SPAdes with specified kmer sizes 99,105,107, and 111, run FastQC and MultiQC, and produce a quast report using the following command within the Team3-GenomeAssembly/ directory:
 
 ```
-./pipeline.sh -i example_data/ -o example_out -k 99,105,107,115 -mq
+./pipeline.sh -i example_data/ -o example_out -k 99,105,107,111 -mq
 ```
 
+You can view the output of this command without running it. Check out Team3-GenomeAssembly/example_output. Also feel free to run the command above an analyze the output and verify that the results are reproducible. Below is the Quast result.tsv showing an assembled genome with 8 contigs.
+
+```
+Assembly	CGT3662_scaffolds
+# contigs (>= 0 bp)	10
+# contigs (>= 1000 bp)	7
+# contigs (>= 5000 bp)	7
+# contigs (>= 10000 bp)	7
+# contigs (>= 25000 bp)	7
+# contigs (>= 50000 bp)	7
+Total length (>= 0 bp)	2915377
+Total length (>= 1000 bp)	2914433
+Total length (>= 5000 bp)	2914433
+Total length (>= 10000 bp)	2914433
+Total length (>= 25000 bp)	2914433
+Total length (>= 50000 bp)	2914433
+# contigs	8
+Largest contig	1528638
+Total length	2915081
+GC (%)	37.86
+N50	1528638
+N75	330532
+L50	1
+L75	3
+# N's per 100 kbp	2.61
+```
